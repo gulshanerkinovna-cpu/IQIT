@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="IQIT - Dasturlash paradigmalari bo'yicha interaktiv test platformasi. O'qituvchi va talabalar uchun onlayn test tizimi.">
+<meta name="keywords" content="IQIT, test, dasturlash, paradigma, OOP, imperativ, funksional, talabalar, quiz">
+<meta name="author" content="IQIT Platform">
+<meta property="og:title" content="IQIT - Test Platformasi">
+<meta property="og:description" content="Dasturlash paradigmalari bo'yicha interaktiv test tizimi">
+<meta property="og:type" content="website">
+<title>IQIT — Test Platformasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a0a12;
+    --bg-mid: #0f0f1e;
+    --bg-card: #13132a;
+    --accent: #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --green: #00ff88;
+    --red: #ff3366;
+    --yellow: #ffcc00;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --border: #2a2a4a;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow-purple: 0 0 20px rgba(123,47,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(123,47,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.06) 0%, transparent 50%);
+  }
+
+  /* GRID OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  /* HEADER */
+  .site-header {
+    text-align: center;
+    padding: 30px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 30px rgba(0,212,255,0.5));
+  }
+  .logo-sub {
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* SECTIONS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* CARD */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+
+  h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  /* INPUTS */
+  .input-group { margin-bottom: 16px; }
+  .input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  input[type="text"], input[type="password"], select {
+    width: 100%;
+    background: #0a0a18;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.15);
+  }
+
+  /* BUTTONS */
+  .btn {
+    padding: 13px 28px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.25);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(0,212,255,0.4); }
+  .btn-danger { background: linear-gradient(135deg, #cc0033, var(--red)); color: #fff; }
+  .btn-success { background: linear-gradient(135deg, #009944, var(--green)); color: #000; }
+  .btn-full { width: 100%; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  /* ROLE SELECTOR */
+  .role-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+  .role-btn {
+    padding: 24px;
+    background: #0a0a18;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s;
+    color: var(--text);
+  }
+  .role-btn:hover, .role-btn.selected {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+    box-shadow: var(--glow);
+  }
+  .role-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+  .role-name { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: var(--accent); }
+
+  /* STATUS BADGE */
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .badge-waiting { background: rgba(255,204,0,0.15); color: var(--yellow); border: 1px solid rgba(255,204,0,0.3); }
+  .badge-active { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+  .badge-ended { background: rgba(255,51,102,0.15); color: var(--red); border: 1px solid rgba(255,51,102,0.3); }
+
+  /* TEACHER PANEL */
+  .teacher-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-box {
+    background: #0a0a18;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num { font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+  /* WAITING SCREEN */
+  .pulse-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    margin: 30px auto;
+    position: relative;
+    animation: pulse 2s infinite;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pulse-ring::before {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.3);
+    animation: pulse 2s infinite 0.5s;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .pulse-icon { font-size: 3rem; }
+  .waiting-text {
+    text-align: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    animation: blink 1.5s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* TIMER */
+  .timer-ring-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+  .timer-svg { transform: rotate(-90deg); }
+  .timer-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+  .timer-arc { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+  .timer-text-wrap {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    width: 90px; height: 90px; margin: 0 auto;
+  }
+  .timer-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    position: absolute;
+    text-align: center;
+  }
+
+  /* QUESTION */
+  .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .q-num { font-family: 'Orbitron', monospace; font-size: 0.85rem; color: var(--text-dim); }
+  .q-score { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--accent); }
+  .question-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: rgba(0,212,255,0.04);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .option-btn {
+    padding: 16px 20px;
+    background: #0d0d20;
+    border: 2px solid var(--yellow);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,204,0,0.05);
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    transform: translateY(-2px);
+  }
+  .option-btn.correct {
+    background: rgba(0,255,136,0.1);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .option-btn.incorrect {
+    background: rgba(255,51,102,0.1);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .option-btn:disabled { cursor: not-allowed; }
+  .opt-label {
+    display: inline-block;
+    width: 24px; height: 24px;
+    background: rgba(255,204,0,0.15);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 10px;
+    color: var(--yellow);
+  }
+  .option-btn.correct .opt-label { background: rgba(0,255,136,0.2); color: var(--green); }
+  .option-btn.incorrect .opt-label { background: rgba(255,51,102,0.2); color: var(--red); }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-bar-bg {
+    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-text { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.8rem; color: var(--text-dim); }
+
+  /* LIVE LEADERBOARD */
+  .leaderboard { list-style: none; }
+  .lb-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: #0a0a18;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  .lb-rank {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .lb-rank.gold { color: var(--gold); }
+  .lb-rank.silver { color: var(--silver); }
+  .lb-rank.bronze { color: var(--bronze); }
+  .lb-name { flex: 1; font-weight: 600; }
+  .lb-group { font-size: 0.8rem; color: var(--text-dim); margin-right: 12px; }
+  .lb-score { font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--accent); }
+
+  /* RESULTS */
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: 16px; margin: 30px 0; }
+  .podium-place {
+    text-align: center;
+    padding: 16px;
+    border-radius: 12px 12px 0 0;
+    min-width: 110px;
+    position: relative;
+    overflow: hidden;
+  }
+  .podium-place::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+  }
+  .podium-1 { background: linear-gradient(135deg, #3d3000, #6b5000); border: 2px solid var(--gold); height: 160px; }
+  .podium-2 { background: linear-gradient(135deg, #2a2a2a, #444); border: 2px solid var(--silver); height: 130px; }
+  .podium-3 { background: linear-gradient(135deg, #3d1f00, #6b3700); border: 2px solid var(--bronze); height: 110px; }
+  .podium-medal { font-size: 2rem; display: block; }
+  .podium-name { font-size: 0.85rem; font-weight: 600; margin: 6px 0 4px; word-break: break-word; }
+  .podium-score { font-family: 'Orbitron', monospace; font-size: 1.1rem; }
+  .podium-1 .podium-score { color: var(--gold); }
+  .podium-2 .podium-score { color: var(--silver); }
+  .podium-3 .podium-score { color: var(--bronze); }
+  .congrats-msg {
+    text-align: center;
+    padding: 16px 24px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    animation: fadeInUp 0.5s ease;
+  }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .congrats-1 { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.4); color: var(--gold); }
+  .congrats-2 { background: rgba(192,192,192,0.1); border: 1px solid rgba(192,192,192,0.4); color: var(--silver); }
+  .congrats-3 { background: rgba(205,127,50,0.1); border: 1px solid rgba(205,127,50,0.4); color: var(--bronze); }
+
+  /* NOTIFICATION */
+  #notification {
+    position: fixed; bottom: 30px; right: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    z-index: 9999;
+    max-width: 320px;
+    font-size: 0.9rem;
+    transform: translateX(400px);
+    transition: transform 0.4s ease;
+    border-left: 4px solid var(--accent);
+  }
+  #notification.show { transform: translateX(0); }
+
+  /* PARTICIPANTS LIST */
+  .participants-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 10px; }
+  .participant-chip {
+    background: #0a0a18;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .participant-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  /* FINAL SCORES TABLE */
+  .scores-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .scores-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .scores-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(42,42,74,0.5);
+    font-size: 0.95rem;
+  }
+  .scores-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* MISC */
+  .text-center { text-align: center; }
+  .text-dim { color: var(--text-dim); font-size: 0.9rem; }
+  .mt-10 { margin-top: 10px; }
+  .mt-20 { margin-top: 20px; }
+  .flex-row { display: flex; gap: 12px; }
+  .flex-row .btn { flex: 1; }
+
+  /* FLOATING TIMER OVERLAY */
+  #float-timer {
+    position: fixed; top: 20px; right: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 70px; height: 70px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    box-shadow: var(--glow);
+    z-index: 100;
+    display: none;
+  }
+
+  /* STARS ANIMATION for winner */
+  .stars-wrap {
+    position: fixed; inset: 0; pointer-events: none; z-index: 500;
+    overflow: hidden;
+    display: none;
+  }
+  .star {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    animation: fall 3s linear forwards;
+  }
+  @keyframes fall {
+    from { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  @media (max-width: 600px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .teacher-stats { grid-template-columns: 1fr 1fr; }
+    .podium { gap: 8px; }
+    .podium-place { min-width: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="float-timer"></div>
+<div id="notification"></div>
+<div class="stars-wrap" id="starsWrap"></div>
+
+<div class="container">
+  <header class="site-header">
+    <div class="logo">IQIT</div>
+    <div class="logo-sub">Interaktiv Test Platformasi</div>
+  </header>
+
+  <!-- ROLE SELECT -->
+  <div id="screen-role" class="screen active">
+    <div class="card">
+      <h2>🎓 Kirish</h2>
+      <p class="text-dim" style="margin-bottom:20px">Rolingizni tanlang:</p>
+      <div class="role-btns">
+        <div class="role-btn" onclick="selectRole('teacher')">
+          <span class="role-icon">👨‍🏫</span>
+          <div class="role-name">O'qituvchi</div>
+          <div class="text-dim" style="font-size:0.8rem;margin-top:6px">Test boshqarish</div>
+        </div>
+        <div class="role-btn" onclick="selectRole('student')">
+          <span class="role-icon">👨‍🎓</span>
+          <div class="role-name">Talaba</div>
+          <div class="text-dim" style="font-size:0.8rem;margin-top:6px">Testga kirish</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER LOGIN -->
+  <div id="screen-teacher-login" class="screen">
+    <div class="card">
+      <h2>🔐 O'qituvchi Kirish</h2>
+      <div class="input-group">
+        <label>Parol</label>
+        <input type="password" id="teacher-pass" placeholder="Parolni kiriting..." onkeydown="if(event.key==='Enter')teacherLogin()">
+      </div>
+      <div class="text-dim mt-10" style="font-size:0.8rem">Default parol: <strong style="color:var(--accent)">teacher123</strong></div>
+      <div class="flex-row mt-20">
+        <button class="btn btn-primary" onclick="teacherLogin()">Kirish</button>
+        <button class="btn" style="background:#1a1a2e;border:1px solid var(--border)" onclick="showScreen('screen-role')">Orqaga</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT LOGIN -->
+  <div id="screen-student-login" class="screen">
+    <div class="card">
+      <h2>📝 Talaba Ma'lumotlari</h2>
+      <div class="input-group">
+        <label>To'liq Ism</label>
+        <input type="text" id="student-name" placeholder="Ism Familiya..." maxlength="50">
+      </div>
+      <div class="input-group">
+        <label>Guruh</label>
+        <input type="text" id="student-group" placeholder="Masalan: IK-21" maxlength="20">
+      </div>
+      <div class="flex-row mt-20">
+        <button class="btn btn-primary" onclick="studentJoin()">Qo'shilish</button>
+        <button class="btn" style="background:#1a1a2e;border:1px solid var(--border)" onclick="showScreen('screen-role')">Orqaga</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER PANEL -->
+  <div id="screen-teacher" class="screen">
+    <div class="card">
+      <h2>🎛️ O'qituvchi Paneli</h2>
+      <div class="teacher-stats">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-students">0</div>
+          <div class="stat-label">Talabalar</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-qnum">0/15</div>
+          <div class="stat-label">Savollar</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-status-box"><span class="badge badge-waiting">Kutmoqda</span></div>
+          <div class="stat-label">Holat</div>
+        </div>
+      </div>
+      <div id="teacher-participants" class="participants-grid" style="margin-bottom:16px"></div>
+      <div class="flex-row">
+        <button class="btn btn-success" id="btn-start-test" onclick="startTest()">▶ Testni Boshlash</button>
+        <button class="btn btn-danger" id="btn-end-test" onclick="endTest()" disabled>⏹ Testni Yakunlash</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📊 Jonli Reyting</h2>
+      <ul class="leaderboard" id="teacher-leaderboard"></ul>
+    </div>
+  </div>
+
+  <!-- STUDENT WAITING -->
+  <div id="screen-waiting" class="screen">
+    <div class="card text-center">
+      <div class="pulse-ring">
+        <span class="pulse-icon">⏳</span>
+      </div>
+      <h2>Test Boshlanishini Kuting</h2>
+      <p class="text-dim">O'qituvchi testni boshlaguncha kuting...</p>
+      <div class="waiting-text mt-20">● ● ●</div>
+      <div class="mt-20">
+        <div style="font-size:0.9rem;color:var(--text-dim)">Siz:</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;color:var(--accent);margin-top:4px" id="wait-name-display"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>👥 Ulangan Talabalar (<span id="wait-count">0</span>)</h2>
+      <div id="wait-participants" class="participants-grid"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span id="q-progress-text">Savol 1 / 15</span>
+          <span id="q-score-display">Ball: 0</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- TIMER RING -->
+      <div style="text-align:center;margin-bottom:16px">
+        <svg width="90" height="90" class="timer-svg" id="timerSvg">
+          <circle class="timer-bg" cx="45" cy="45" r="38"/>
+          <circle class="timer-arc" id="timerArc" cx="45" cy="45" r="38"
+            stroke-dasharray="238.76" stroke-dashoffset="0"/>
+        </svg>
+        <div style="margin-top:-70px;height:70px;display:flex;align-items:center;justify-content:center">
+          <span class="timer-val" id="timer-display">20</span>
+        </div>
+        <div style="margin-top:10px"></div>
+      </div>
+
+      <div class="question-header">
+        <span class="q-num" id="q-num-label">SAVOL 1</span>
+        <span class="q-score" id="q-current-score">0 ★</span>
+      </div>
+      <div class="question-text" id="question-text">Savol yuklanyapti...</div>
+      <div class="options-grid" id="options-container"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screen-results" class="screen">
+    <div class="card text-center">
+      <h2>🏆 Test Yakunlandi!</h2>
+      <div class="podium" id="podium-wrap"></div>
+      <div id="congrats-section"></div>
+    </div>
+    <div class="card">
+      <h2>📋 Barcha Natijalar</h2>
+      <table class="scores-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Ism</th>
+            <th>Guruh</th>
+            <th>Ball</th>
+            <th>To'g'ri</th>
+            <th>Noto'g'ri</th>
+          </tr>
+        </thead>
+        <tbody id="results-tbody"></tbody>
+      </table>
+    </div>
+    <div class="card text-center">
+      <button class="btn btn-primary" onclick="resetAll()">🔄 Yangi Test</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ========== DATA ==========
+const ALL_QUESTIONS = [
+  {q:"Dasturlash paradigmasi nima?", options:["Dastur yozish uslubi yoki yondashuvi","Kompyuter arxitekturasi","Operatsion tizim turi","Tarmoq protokoli"], correct:0},
+  {q:"Asosiy paradigmalar qaysilar?", options:["Imperativ, OOP, funksional","SQL, HTML, CSS","Kompilator, interpretator, assembler","Klient, server, cloud"], correct:0},
+  {q:"Imperativ paradigma nima?", options:["Buyruqlar ketma-ketligi orqali ishlaydi","Funksiyalar orqali ishlaydi","Obyektlar orqali ishlaydi","Qoidalar orqali ishlaydi"], correct:0},
+  {q:"Imperativ dasturlashda asosiy narsa nima?", options:["Holat (state) va uni o'zgartirish","Funksiyalar tarkibi","Obyekt munosabatlari","Ma'lumotlar bazasi"], correct:0},
+  {q:"Imperativ dasturlashga misol tillar?", options:["C, Pascal","Haskell, Lisp","HTML, CSS","SQL, NoSQL"], correct:0},
+  {q:"Obyektga yo'naltirilgan paradigma nima?", options:["Dastur obyektlar orqali tuziladi","Dastur qoidalar orqali tuziladi","Dastur buyruqlar orqali tuziladi","Dastur funksiyalar orqali tuziladi"], correct:0},
+  {q:"OOP ning asosiy tushunchalari?", options:["Klass, obyekt, meros, inkapsulyatsiya","Loop, rekursiya, funksiya","Tarmoq, server, klient","Fayl, papka, disk"], correct:0},
+  {q:"Klass nima?", options:["Obyekt uchun shablon","Funksiyalar to'plami","Ma'lumotlar bazasi","Tarmoq protokoli"], correct:0},
+  {q:"Obyekt nima?", options:["Klassning nusxasi","Funksiyaning nusxasi","Fayl nusxasi","Dastur nusxasi"], correct:0},
+  {q:"OOP tillarga misol?", options:["Java, Python, C++","C, Pascal, Assembly","Haskell, Lisp, Scala","HTML, CSS, JS"], correct:0},
+  {q:"Funksional paradigma nima?", options:["Hisoblash funksiyalar orqali amalga oshadi","Hisoblash buyruqlar orqali amalga oshadi","Hisoblash qoidalar orqali amalga oshadi","Hisoblash obyektlar orqali amalga oshadi"], correct:0},
+  {q:"Funksional dasturlashning asosiy g'oyasi?", options:["O'zgarmaslik (immutability)","O'zgaruvchanlik (mutability)","Meros (inheritance)","Polimorfizm"], correct:0},
+  {q:"Funksional tilga misol?", options:["Haskell, Lisp","C, Pascal","Java, Python","HTML, CSS"], correct:0},
+  {q:"Imperativ yondashuvda nima muhim?", options:["Qanday bajarish","Nima hisoblanadi","Kim bajaradi","Qachon bajariladi"], correct:0},
+  {q:"Funksional yondashuvda nima muhim?", options:["Nima hisoblanadi","Qanday bajarish","Kim bajaradi","Qachon bajariladi"], correct:0},
+  {q:"OOP da inkapsulyatsiya nima?", options:["Ma'lumotni yashirish","Ma'lumotni ulashish","Ma'lumotni o'chirish","Ma'lumotni nusxalash"], correct:0},
+  {q:"Meros (inheritance) nima?", options:["Klassdan yangi klass yaratish","Obyektni o'chirish","Funksiyani chaqirish","Fayl yaratish"], correct:0},
+  {q:"Polimorfizm nima?", options:["Bir xil nom, turli ishlash","Bir xil nom, bir xil ishlash","Turli nom, bir xil ishlash","Turli nom, turli ishlash"], correct:0},
+  {q:"Imperativ kod qanday yoziladi?", options:["Qadam-baqadam buyruqlar bilan","Funksiyalar orqali","Klasslar orqali","Qoidalar orqali"], correct:0},
+  {q:"Funksional kod qanday yoziladi?", options:["Funksiyalar orqali","Buyruqlar orqali","Klasslar orqali","Sikllar orqali"], correct:0},
+  {q:"OOP ning afzalligi?", options:["Kodni qayta ishlatish oson","Kod sekinroq ishlaydi","Xotira ko'p sarflanadi","Faqat bitta til uchun"], correct:0},
+  {q:"Imperativning afzalligi?", options:["Oddiy va tushunarli","Murakkab va chalkash","Faqat katta dasturlar uchun","Xotira sarfi ko'p"], correct:0},
+  {q:"Funksionalning afzalligi?", options:["Xatolar kam bo'ladi","Xatolar ko'p bo'ladi","Sekin ishlaydi","Faqat matematik dasturlar uchun"], correct:0},
+  {q:"State nima?", options:["Dastur holati","Dastur nomi","Dastur tili","Dastur hajmi"], correct:0},
+  {q:"Immutability nima?", options:["O'zgarmaslik","O'zgaruvchanlik","Takrorlanish","Rekursiya"], correct:0},
+  {q:"Loop qaysi paradigmada ko'p ishlatiladi?", options:["Imperativ","Funksional","Deklarativ","Mantiqiy"], correct:0},
+  {q:"Rekursiya qaysida ko'p ishlatiladi?", options:["Funksional","Imperativ","OOP","Protsedural"], correct:0},
+  {q:"OOP da metod nima?", options:["Klass ichidagi funksiya","Klass ichidagi o'zgaruvchi","Klass nomi","Klass hajmi"], correct:0},
+  {q:"Funksiya nima?", options:["Natija qaytaruvchi blok","Natija qaytarmaydigan blok","O'zgaruvchi turi","Ma'lumot turi"], correct:0},
+  {q:"Procedura nima?", options:["Natija qaytarmaydigan funksiya","Natija qaytaruvchi funksiya","Klass turi","Obyekt turi"], correct:0},
+  {q:"Dastur nima?", options:["Kompyuterga buyruqlar to'plami","Kompyuter qismi","Tarmoq turi","Ma'lumot turi"], correct:0},
+  {q:"Paradigma nima uchun kerak?", options:["Kodni tartibli yozish uchun","Kompyuterni tezlashtirish uchun","Xotirani tejash uchun","Tarmoqni kengaytirish uchun"], correct:0},
+  {q:"OOP da kapsulatsiya foydasi?", options:["Xavfsizlik","Tezlik","Tejamkorlik","Soddalik"], correct:0},
+  {q:"Klass atributi nima?", options:["Obyekt xususiyati","Obyekt metodi","Klass nomi","Klass turi"], correct:0},
+  {q:"Funksional dasturlashda global o'zgaruvchi bormi?", options:["Odatda yo'q","Ha, majburiy","Faqat bitta","Cheksiz miqdorda"], correct:0},
+  {q:"Imperativ dasturlashda o'zgaruvchi bormi?", options:["Ha","Yo'q","Ba'zan","Hech qachon"], correct:0},
+  {q:"OOP da konstruktor nima?", options:["Obyekt yaratish funksiyasi","Obyekt o'chirish funksiyasi","Klass nomi","Metod turi"], correct:0},
+  {q:"Funksional dasturlashda side effect nima?", options:["Tashqi holatga ta'sir","Tashqi holatdan ta'sir","Rekursiv chaqiruv","Xato turi"], correct:0},
+  {q:"OOP da abstraksiya nima?", options:["Keraksiz detallarni yashirish","Barcha detallarni ko'rsatish","Kodni qisqartirish","Kodni uzaytirish"], correct:0},
+  {q:"Qaysi paradigma murakkabroq?", options:["Funksional","Imperativ","OOP","Protsedural"], correct:0},
+  {q:"Imperativ tilga yana misol?", options:["C++","Haskell","Lisp","Scala"], correct:0},
+  {q:"OOP tilga yana misol?", options:["C#","C","Pascal","Assembly"], correct:0},
+  {q:"Funksional tilga yana misol?", options:["Scala","C","Java","Python"], correct:0},
+  {q:"Paradigmalar aralash bo'lishi mumkinmi?", options:["Ha","Yo'q","Faqat OOP bilan","Faqat imperativ bilan"], correct:0},
+  {q:"Python qaysi turga kiradi?", options:["Aralash (multi-paradigm)","Faqat OOP","Faqat funksional","Faqat imperativ"], correct:0},
+  {q:"Java qaysi paradigma?", options:["OOP","Funksional","Imperativ","Deklarativ"], correct:0},
+  {q:"Kodni qayta ishlatish nima?", options:["Bir kodni qayta qo'llash","Kodni o'chirish","Kodni nusxalash","Kodni tarjima qilish"], correct:0},
+  {q:"Modularlik nima?", options:["Kodni qismlarga ajratish","Kodni birlashtirish","Kodni qisqartirish","Kodni uzaytirish"], correct:0},
+  {q:"Funksional dasturlashda asosiy vosita?", options:["Funksiya","Klass","Loop","O'zgaruvchi"], correct:0},
+  {q:"Eng asosiy maqsad nima?", options:["Samarali va tushunarli dastur yozish","Tezkor dastur yozish","Kichik dastur yozish","Katta dastur yozish"], correct:0},
+];
+
+// ========== STATE ==========
+const TEACHER_PASS = "teacher123";
+const CORRECT_POINTS = 50;
+const WRONG_POINTS = -20;
+const QUESTION_TIME = 20;
+const QUESTIONS_PER_TEST = 15;
+const SHEET_ID = "15NiYRAXzan8E6_p-rNw8KjTXUaZqr1Lqwa1_KmQp5II";
+
+// Shared state via localStorage (simulating server)
+let state = {
+  testStatus: 'waiting', // waiting | active | ended
+  participants: {},      // {id: {name, group, score, correct, wrong, answered}}
+  currentQuestion: 0,
+  questionOrder: {},     // {studentId: [indices]}
+  startTime: null,
+};
+
+let myId = null;
+let myName = '', myGroup = '';
+let isTeacher = false;
+let questionIndices = [];
+let currentQIndex = 0;
+let timerInterval = null;
+let timeLeft = QUESTION_TIME;
+let answered = false;
+let myScore = 0;
+let myCorrect = 0;
+let myWrong = 0;
+let pollInterval = null;
+
+// ========== UTILS ==========
+function uid() {
+  return Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+}
+function saveState() {
+  localStorage.setItem('iqit_state', JSON.stringify(state));
+}
+function loadState() {
+  const s = localStorage.getItem('iqit_state');
+  if (s) state = JSON.parse(s);
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function notify(msg, color) {
+  const n = document.getElementById('notification');
+  n.textContent = msg;
+  n.style.borderLeftColor = color || 'var(--accent)';
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 3000);
+}
+
+// ========== ROLE ==========
+function selectRole(role) {
+  if (role === 'teacher') showScreen('screen-teacher-login');
+  else showScreen('screen-student-login');
+}
+
+// ========== TEACHER ==========
+function teacherLogin() {
+  const pass = document.getElementById('teacher-pass').value;
+  if (pass !== TEACHER_PASS) { notify('Noto\'g\'ri parol!', 'var(--red)'); return; }
+  isTeacher = true;
+  loadState();
+  // Reset if ended
+  if (state.testStatus === 'ended') {
+    state = { testStatus:'waiting', participants:{}, currentQuestion:0, questionOrder:{}, startTime:null };
+    saveState();
+  }
+  showScreen('screen-teacher');
+  startPollingTeacher();
+  updateTeacherUI();
+}
+
+function startPollingTeacher() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(() => {
+    loadState();
+    updateTeacherUI();
+  }, 1000);
+}
+
+function updateTeacherUI() {
+  const parts = Object.values(state.participants);
+  document.getElementById('stat-students').textContent = parts.length;
+  document.getElementById('stat-qnum').textContent = state.currentQuestion + '/15';
+
+  const statusBox = document.getElementById('stat-status-box');
+  if (state.testStatus === 'waiting') statusBox.innerHTML = '<span class="badge badge-waiting">Kutmoqda</span>';
+  else if (state.testStatus === 'active') statusBox.innerHTML = '<span class="badge badge-active">Faol</span>';
+  else statusBox.innerHTML = '<span class="badge badge-ended">Yakunlandi</span>';
+
+  // Participants chips
+  const pGrid = document.getElementById('teacher-participants');
+  pGrid.innerHTML = parts.map(p =>
+    `<div class="participant-chip"><div class="participant-dot"></div><span>${p.name} (${p.group})</span></div>`
+  ).join('');
+
+  // Leaderboard
+  const sorted = parts.slice().sort((a,b) => b.score - a.score);
+  const lb = document.getElementById('teacher-leaderboard');
+  lb.innerHTML = sorted.map((p,i) => {
+    let rankClass = '';
+    let rankIcon = `#${i+1}`;
+    if (i===0) { rankClass='gold'; rankIcon='🥇'; }
+    else if (i===1) { rankClass='silver'; rankIcon='🥈'; }
+    else if (i===2) { rankClass='bronze'; rankIcon='🥉'; }
+    return `<li class="lb-item">
+      <span class="lb-rank ${rankClass}">${rankIcon}</span>
+      <span class="lb-name">${p.name}</span>
+      <span class="lb-group">${p.group}</span>
+      <span class="lb-score">${p.score}</span>
+    </li>`;
+  }).join('') || '<li style="color:var(--text-dim);padding:16px;text-align:center">Hali talabalar yo\'q</li>';
+
+  document.getElementById('btn-start-test').disabled = state.testStatus !== 'waiting' || parts.length === 0;
+  document.getElementById('btn-end-test').disabled = state.testStatus !== 'active';
+
+  if (state.testStatus === 'ended') {
+    clearInterval(pollInterval);
+    showResultsScreen();
+  }
+}
+
+function startTest() {
+  loadState();
+  state.testStatus = 'active';
+  state.currentQuestion = 1;
+  state.startTime = Date.now();
+  // Assign shuffled question order for each participant
+  Object.keys(state.participants).forEach(id => {
+    state.questionOrder[id] = shuffleArray([...Array(ALL_QUESTIONS.length).keys()]).slice(0, QUESTIONS_PER_TEST);
+    state.participants[id].answered = [];
+    state.participants[id].score = 0;
+    state.participants[id].correct = 0;
+    state.participants[id].wrong = 0;
+  });
+  saveState();
+  notify('Test boshlandi! 🚀', 'var(--green)');
+  updateTeacherUI();
+}
+
+function endTest() {
+  loadState();
+  state.testStatus = 'ended';
+  saveState();
+  clearInterval(pollInterval);
+  showResultsScreen();
+}
+
+// ========== STUDENT ==========
+function studentJoin() {
+  const name = document.getElementById('student-name').value.trim();
+  const group = document.getElementById('student-group').value.trim();
+  if (!name) { notify('Ismingizni kiriting!', 'var(--red)'); return; }
+  if (!group) { notify('Guruhingizni kiriting!', 'var(--red)'); return; }
+
+  myId = uid();
+  myName = name;
+  myGroup = group;
+
+  loadState();
+  if (state.testStatus === 'ended') {
+    notify('Test allaqachon yakunlangan!', 'var(--red)'); return;
+  }
+
+  state.participants[myId] = {
+    id: myId, name, group, score: 0, correct: 0, wrong: 0, answered: []
+  };
+  saveState();
+
+  document.getElementById('wait-name-display').textContent = `${name} · ${group}`;
+  showScreen('screen-waiting');
+  startPollingStudent();
+}
+
+function startPollingStudent() {
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = setInterval(() => {
+    loadState();
+    // Update waiting participants
+    const parts = Object.values(state.participants);
+    document.getElementById('wait-count').textContent = parts.length;
+    document.getElementById('wait-participants').innerHTML = parts.map(p =>
+      `<div class="participant-chip"><div class="participant-dot"></div><span>${p.name} (${p.group})</span></div>`
+    ).join('');
+
+    if (state.testStatus === 'active' && state.questionOrder[myId]) {
+      clearInterval(pollInterval);
+      startStudentQuiz();
+    } else if (state.testStatus === 'ended') {
+      clearInterval(pollInterval);
+      showResultsScreen();
+    }
+  }, 1000);
+}
+
+function startStudentQuiz() {
+  loadState();
+  questionIndices = state.questionOrder[myId] || [];
+  currentQIndex = 0;
+  myScore = state.participants[myId]?.score || 0;
+  myCorrect = state.participants[myId]?.correct || 0;
+  myWrong = state.participants[myId]?.wrong || 0;
+  showScreen('screen-quiz');
+  showQuestion();
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function showQuestion() {
+  if (currentQIndex >= QUESTIONS_PER_TEST) {
+    // Test done for this student
+    finishStudentTest();
+    return;
+  }
+  answered = false;
+  timeLeft = QUESTION_TIME;
+
+  const qIdx = questionIndices[currentQIndex];
+  const qData = ALL_QUESTIONS[qIdx];
+  const shuffledOptions = shuffleArray([...Array(qData.options.length).keys()]);
+  const correctOrigIdx = 0; // always index 0 in ALL_QUESTIONS
+  const correctNewPos = shuffledOptions.indexOf(correctOrigIdx);
+
+  // Update UI
+  document.getElementById('q-num-label').textContent = `SAVOL ${currentQIndex+1}`;
+  document.getElementById('q-progress-text').textContent = `Savol ${currentQIndex+1} / ${QUESTIONS_PER_TEST}`;
+  document.getElementById('q-score-display').textContent = `Ball: ${myScore}`;
+  document.getElementById('q-current-score').textContent = `${myScore} ★`;
+  document.getElementById('progress-fill').style.width = `${(currentQIndex/QUESTIONS_PER_TEST)*100}%`;
+  document.getElementById('question-text').textContent = qData.q;
+
+  const optLabels = ['A', 'B', 'C', 'D'];
+  const container = document.getElementById('options-container');
+  container.innerHTML = shuffledOptions.map((origIdx, pos) => `
+    <button class="option-btn" onclick="selectAnswer(${pos}, ${correctNewPos}, this)">
+      <span class="opt-label">${optLabels[pos]}</span>${qData.options[origIdx]}
+    </button>
+  `).join('');
+
+  startTimer(correctNewPos);
+}
+
+function startTimer(correctPos) {
+  clearInterval(timerInterval);
+  const arc = document.getElementById('timerArc');
+  const circumference = 238.76;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timer-display').textContent = timeLeft;
+    const offset = circumference * (1 - timeLeft / QUESTION_TIME);
+    arc.style.strokeDashoffset = offset;
+
+    if (timeLeft <= 5) arc.style.stroke = 'var(--red)';
+    else if (timeLeft <= 10) arc.style.stroke = 'var(--yellow)';
+    else arc.style.stroke = 'var(--accent)';
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!answered) {
+        answered = true;
+        // Time up = wrong
+        myWrong++;
+        myScore += WRONG_POINTS;
+        if (myScore < 0) myScore = 0;
+        // Mark all as incorrect display
+        document.querySelectorAll('.option-btn').forEach((btn, i) => {
+          btn.disabled = true;
+          if (i === correctPos) btn.classList.add('correct');
+        });
+        notify('⏰ Vaqt tugadi! -20 ball', 'var(--red)');
+        saveMyStat();
+        setTimeout(() => { currentQIndex++; showQuestion(); }, 1500);
+      }
+    }
+  }, 1000);
+}
+
+function selectAnswer(selectedPos, correctPos, btn) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (selectedPos === correctPos) {
+    btn.classList.add('correct');
+    myCorrect++;
+    myScore += CORRECT_POINTS;
+    notify('✅ To\'g\'ri! +50 ball', 'var(--green)');
+  } else {
+    btn.classList.add('incorrect');
+    allBtns[correctPos].classList.add('correct');
+    myWrong++;
+    myScore += WRONG_POINTS;
+    if (myScore < 0) myScore = 0;
+    notify('❌ Noto\'g\'ri! -20 ball', 'var(--red)');
+  }
+
+  saveMyStat();
+  setTimeout(() => { currentQIndex++; showQuestion(); }, 1500);
+}
+
+function saveMyStat() {
+  loadState();
+  if (state.participants[myId]) {
+    state.participants[myId].score = myScore;
+    state.participants[myId].correct = myCorrect;
+    state.participants[myId].wrong = myWrong;
+  }
+  saveState();
+  // Also try to send to Google Sheets
+  sendToGoogleSheets();
+}
+
+function finishStudentTest() {
+  clearInterval(timerInterval);
+  loadState();
+  // Mark as finished
+  if (state.participants[myId]) {
+    state.participants[myId].finished = true;
+  }
+  // Check if all finished
+  const parts = Object.values(state.participants);
+  const allDone = parts.every(p => p.finished);
+  if (allDone) {
+    state.testStatus = 'ended';
+  }
+  saveState();
+
+  // Student sees results
+  showResultsScreen();
+}
+
+// ========== GOOGLE SHEETS ==========
+async function sendToGoogleSheets() {
+  try {
+    const scriptUrl = `https://script.google.com/macros/s/AKfycbxPLACEHOLDER/exec`;
+    const data = {
+      id: myId, name: myName, group: myGroup,
+      score: myScore, correct: myCorrect, wrong: myWrong,
+      time: new Date().toISOString()
+    };
+    // Note: This requires a published Google Apps Script web app
+    // The spreadsheet ID: 15NiYRAXzan8E6_p-rNw8KjTXUaZqr1Lqwa1_KmQp5II
+    await fetch(scriptUrl + '?action=addRow&' + new URLSearchParams(data), {
+      method: 'GET', mode: 'no-cors'
+    });
+  } catch(e) {
+    // Silently fail - sheets integration requires Apps Script setup
+  }
+}
+
+// ========== RESULTS ==========
+function showResultsScreen() {
+  clearInterval(timerInterval);
+  clearInterval(pollInterval);
+  document.getElementById('float-timer').style.display = 'none';
+
+  loadState();
+  const parts = Object.values(state.participants).sort((a,b) => b.score - a.score);
+
+  // PODIUM
+  const top3 = parts.slice(0,3);
+  const podium = document.getElementById('podium-wrap');
+  const medals = ['🥇','🥈','🥉'];
+  const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd
+  const heights = [130, 160, 110];
+  const classes = ['podium-2','podium-1','podium-3'];
+
+  podium.innerHTML = podiumOrder.map(i => {
+    const p = top3[i];
+    if (!p) return '';
+    return `<div class="podium-place ${classes[podiumOrder.indexOf(i)]}" style="height:${heights[podiumOrder.indexOf(i)]}px">
+      <span class="podium-medal">${medals[i]}</span>
+      <div class="podium-name">${p.name}</div>
+      <div style="font-size:0.75rem;color:var(--text-dim)">${p.group}</div>
+      <div class="podium-score">${p.score}</div>
+    </div>`;
+  }).join('');
+
+  // CONGRATULATIONS
+  const congrats = document.getElementById('congrats-section');
+  const msgs = [
+    {text:"🥇 Tabriklaymiz siz 1-o'rin egasi bo'ldingiz!", cls:"congrats-1"},
+    {text:"🥈 Tabriklaymiz siz 2-o'rin egasi bo'ldingiz!", cls:"congrats-2"},
+    {text:"🥉 Tabriklaymiz siz 3-o'rin egasi bo'ldingiz!", cls:"congrats-3"},
+  ];
+  congrats.innerHTML = top3.map((p,i) =>
+    `<div class="congrats-msg ${msgs[i].cls}">${msgs[i].text} — ${p.name} (${p.score} ball)</div>`
+  ).join('');
+
+  // TABLE
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = parts.map((p,i) => `
+    <tr>
+      <td><b>${i+1}</b></td>
+      <td>${p.name}</td>
+      <td>${p.group}</td>
+      <td style="font-family:'Orbitron',monospace;color:var(--accent)">${p.score}</td>
+      <td style="color:var(--green)">${p.correct || 0}</td>
+      <td style="color:var(--red)">${p.wrong || 0}</td>
+    </tr>
+  `).join('');
+
+  showScreen('screen-results');
+  launchStars();
+}
+
+function launchStars() {
+  const wrap = document.getElementById('starsWrap');
+  wrap.style.display = 'block';
+  const colors = ['#ffd700','#00d4ff','#ff6b35','#7b2fff','#00ff88'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = '-10px';
+      star.style.background = colors[Math.floor(Math.random()*colors.length)];
+      star.style.animationDuration = (2 + Math.random()*2) + 's';
+      star.style.animationDelay = Math.random() + 's';
+      wrap.appendChild(star);
+      setTimeout(() => star.remove(), 5000);
+    }, i * 80);
+  }
+  setTimeout(() => { wrap.style.display = 'none'; }, 6000);
+}
+
+function resetAll() {
+  loadState();
+  state = { testStatus:'waiting', participants:{}, currentQuestion:0, questionOrder:{}, startTime:null };
+  saveState();
+  myId = null; myName=''; myGroup='';
+  isTeacher = false;
+  currentQIndex = 0; myScore = 0; myCorrect = 0; myWrong = 0;
+  clearInterval(timerInterval);
+  clearInterval(pollInterval);
+  showScreen('screen-role');
+}
+
+// ========== INIT ==========
+window.addEventListener('load', () => {
+  loadState();
+  // Check storage every second for cross-tab sync
+});
+
+// Handle page visibility for polling
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) loadState();
+});
+</script>
+
+<!-- SEO / Schema Markup for search engines -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "IQIT Test Platformasi",
+  "description": "Dasturlash paradigmalari bo'yicha interaktiv onlayn test tizimi. O'qituvchi va talabalar uchun real-time quiz platformasi.",
+  "url": "https://iqit.uz",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "uz",
+  "keywords": "IQIT, dasturlash paradigmasi, OOP, imperativ, funksional, test, quiz, talabalar, o'qituvchi",
+  "author": {
+    "@type": "Organization",
+    "name": "IQIT"
+  }
+}
+</script>
+</body>
+</html>
